@@ -10,16 +10,16 @@ switch ($page) {
     // pages route
    
         case 'description':
-            $app->PageController->description();
+           $pageController->description();
         break;
 
     case 'solutions':
         // get the operation
-        $app->MatrixController->solve($matrix_data, $operation);
+        $matrixController->solve($matrix_data, $operation);
 
     break;
         
     default:
-        $app->PageController->index();
+        $pageController->index();
     exit;
 }
