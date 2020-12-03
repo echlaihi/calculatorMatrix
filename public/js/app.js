@@ -8,14 +8,12 @@ $(document).ready(function() {
         // grub the number of rows
         var numRowsMA = $(numRowsMatrixA).val();
 
-        console.log(numRowsMA);
         if (numRowsMA == 0) return;
 
         // grab the first row
         var rowToAdd = Array.from($('#matrixA tbody tr'))[0];
 
 
-        console.log($(rowToAdd).html());
         // empty the table rows
         $('#matrixA  tbody').empty();
 
@@ -42,14 +40,12 @@ $(document).ready(function() {
         // get all the rows
         var rows = Array.from($('#matrixA tr'));
 
-        console.log(rows);
 
         // clean all the rows
         var j = 0;
         while (j < rows.length) {
             $(rows[j]).empty();
 
-            console.log('hello world');
             // print all the columns in the row again
             var k = 0;
             while (k < numColsMA) {
@@ -86,7 +82,6 @@ $(document).ready(function() {
 
         var i = 0;
         while (i < numRowsMB) {
-            console.log(i);
             $('#matrixB  tbody').append('<tr>' + $(rowToAppend).html() + '</tr>');
             i++;
         }
@@ -107,7 +102,6 @@ $(document).ready(function() {
         // get all the rows
         var rows = Array.from($('#matrixB tr'));
 
-        console.log(rows);
 
         // clean all the rows
         var j = 0;
@@ -120,6 +114,7 @@ $(document).ready(function() {
 
                 $(rows[j]).append('<td><input></td>');
                 k++;
+
             }
 
             j++;
@@ -130,5 +125,66 @@ $(document).ready(function() {
     });
 
 
+    ////////////////////// get data from matrices
+
+    var matrixA = [];
+    var matrixB = [];
+
+
+
+
+    // get number of row
+    $('#solve').click(function() {
+
+
+        function fillArray(id) {
+
+            var matrix = $(`#${id} tr`);
+
+            for (let i = 0; i < matrix.length; i++) {
+
+                matrix[i] = $(matrix[i]).find('input');
+
+                for (let j = 0; j < matrix.length; j++) {
+
+                    matrix[i][j] = parseFloat($(matrix[i][j]).val());
+
+                } // end for
+
+            } // end for
+
+            return matrix;
+
+        } // end function definition
+
+
+        // var matrixA = fillArray('matrixA');
+        // var matrixB = fillArray('matrixB');
+
+
+        // var data = {
+        //     operation: 'multiplication',
+        //     matrixA: matrixA,
+        //     matrixB: matrixB,
+        // }
+
+        // var options = {
+        //     // dataType: 'json',
+        //     // data: data,
+        //     success: function() {
+        //         console.log('success');
+        //     }
+
+        // }
+
+        url = 'home.php';
+        // send data to the server
+        $.ajax('/home.php', {
+            error: function() {
+                console.log('there is an error');
+            },
+        });
+
+    });
 
 });
