@@ -143,7 +143,7 @@ $(document).ready(function() {
 
             for (let i = 0; i < matrix.length; i++) {
 
-                matrix[i] = $(matrix[i]).find('input');
+                matrix[i] = Array.from($(matrix[i]).find('input'));
 
                 for (let j = 0; j < matrix.length; j++) {
 
@@ -158,32 +158,37 @@ $(document).ready(function() {
         } // end function definition
 
 
-        // var matrixA = fillArray('matrixA');
-        // var matrixB = fillArray('matrixB');
+        var matrixA = Array.from(fillArray('matrixA'));
+        var matrixB = Array.from(fillArray('matrixB'));
+
+        console.log(matrixA);
+        console.log(matrixB);
+
+        var data = {
+            operation: 'multiplication',
+            matrixA: matrixA,
+            matrixB: matrixB,
+        }
 
 
-        // var data = {
-        //     operation: 'multiplication',
-        //     matrixA: matrixA,
-        //     matrixB: matrixB,
-        // }
-
-        // var options = {
-        //     // dataType: 'json',
-        //     // data: data,
-        //     success: function() {
-        //         console.log('success');
-        //     }
-
-        // }
-
-        url = 'home.php';
+        url = 'index.php?p=solution';
         // send data to the server
-        $.ajax('/home.php', {
+        var request = $.ajax({
+            url: url,
+            data: data,
+            type: 'get',
             error: function() {
                 console.log('there is an error');
-            },
+            }
         });
+
+        request.done(function(response) {
+            console.log('request done');
+            console.log(response);
+
+        });
+
+
 
     });
 
