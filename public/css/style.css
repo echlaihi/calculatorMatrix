@@ -12,4 +12,11 @@ form input {
   border-radius: .2rem;
   background: aliceblue;
 }
+
+.index {
+  font-size: .7rem;
+  display: inline-block;
+  -webkit-transform: translateY(0.2rem);
+          transform: translateY(0.2rem);
+}
 /*# sourceMappingURL=style.css.map */

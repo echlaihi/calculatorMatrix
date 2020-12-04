@@ -1,10 +1,11 @@
 <?php 
 // include the config file
+require '../config/config.php';
 
 
 
-
-
+// include the traits
+require '../traits/MatrixValidator.php';
 // include the controllers
 require '../controllers/MatrixController.php';
 require '../controllers/PageController.php';

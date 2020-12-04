@@ -6,8 +6,8 @@
         <form class="form-inline">
             <fieldset class="form-group mx-auto">
                 <label for="" class="mx-2">select dimentions : </label>
-                <input type="number" name="" value="3" class="w-25 mr-2">
-                <input type="number" name="" value="3" class="w-25">
+                rows: <input type="number" name="matrixARows"  value="4" class="w-25 mr-2">
+               columns:  <input type="number" name="matrixAColumns"  value="3" class="w-25">
             </fieldset>
 
         </form>
@@ -31,12 +31,14 @@
                         <td><input name=""></td>
                         <td><input name=""></td>
                         <td><input name=""></td>
-                    </tr>                        <tr>
+                    </tr>   
+                    <tr>
                         
                         <td><input name=""></td>
                         <td><input name=""></td>
                         <td><input name=""></td>
-                    </tr>                        <tr>
+                    </tr>           
+                    <tr>
                         
                         <td><input name=""></td>
                         <td><input name=""></td>
@@ -61,8 +63,8 @@
         <form class="form-inline">
             <fieldset class="form-group mx-auto">
                 <label for="" class="mx-2">select dimentions : </label>
-                <input type="number" name="" value="3" class="w-25 mr-2">
-                <input type="number" name="" value="3" class="w-25">
+                <input type="number" name="matrixBRows" value="4" class="w-25 mr-2">
+                <input type="number" name="matrixBColumns" value="3" class="w-25">
             </fieldset>
 
         </form>
@@ -103,3 +105,7 @@
 
     </div>
 </div><!-- end matrix B=============================== -->
+
+<div class="col-12 my-3 d-flex justify-content-center">
+    <button class="btn btn-info px-5" id="solve">Solve</button>
+</div>
