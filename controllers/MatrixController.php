@@ -22,113 +22,84 @@ class MatrixController
    protected function multiply($matrixA, $matrixB)
    {
 
-        // render an error if multiplication cannot be done
-     //    if (!$this->canMuliply()){
-     //        return 'error';
-     //    }
 
-          // diapgonolize the matriceA if it is 2d 
-
-         
-          echo 'the origin is ';
-          print_r($matrixA);
-         
-          //////////////////  transfrom matrix A into 1D
-
-          if (is_array($matrixA[0])){
+          if (is_array($matrixB[0])){
                
 
-               $i = 0;
-               $j = 0;
-              
-               $matrixA1D = [];
+               $matrixB1D = [];
 
-             foreach ($matrixA as $rows) {
+             foreach ($matrixB as $rows) {
                   
                foreach ($rows as $element){
 
-                    array_push($matrixA1D, $element);
+                    array_push($matrixB1D, $element);
 
                }
              }
           
-             // transform 1D array into 2D
-             $matrixADiag = [];
+          //    transform 1D array into 2D
+             $matrixBDiag = [];
              for ($i=0; $i < count($matrixA) ; $i++) { 
                   
 
-               $matrixADiag[$i] = [];
-               for ($j=$i; $j <count($matrixA1D) ; $j+=count($matrixA)) { 
+               $matrixBDiag[$i] = [];
+               for ($j=$i; $j <count($matrixB1D) ; $j+=count($matrixB)) { 
                     
-                     array_push($matrixADiag[$i], $matrixA1D[$j]);
+                     array_push($matrixBDiag[$i], $matrixB1D[$j]);
 
                }
              }
+
+
+             $steps = [];
              $results = [];
-
+             
              // do the mutiplication operation
-             for ($i=0; $i < count($matrixADiag); $i++){
+             for ($i=0; $i < count($matrixA); $i++){
+                  
+                  for($j=0; $j < count($matrixB); $j++){
+                       
 
-               for($j=0; $j < count($matrixB); $j++){
+                         $step = '';
+                       for($k=0; $k < count($matrixB[0]); $k++){
+                            
+                         $matrixAD[$i][$k] = (float) $matrixA[$i][$k];
+                         $matrixBDiag[$i][$k] = (float) $matrixBDiag[$j][$k];
+                         @$results[$i][$j] += $matrixA[$i][$k] * $matrixBDiag[$j][$k];
 
-                    for($k=0; $k < count($matrixB[0]); $k++){
-
-                         $matrixADiag[$i][$k] = (float) $matrixADiag[$i][$k];
-                         $matrixB[$i][$k] = (float) $matrixB[$j][$k];
-                         $results[$i][$j] += $matrixADiag[$i][$k]*$matrixB[$j][$k];
+                         // print the step when solving each element
+                         @$step .=  $matrixA[$i][$k] . ' X ' . $matrixBDiag[$j][$k] . ' + ';
                          
+                         if (count($matrixB[0]) === $k + 1){
+
+                              $step = substr($step, 0, -2);
+                              array_push($steps, $step);
+                         }
+                       
 
                     }
                }
              }
 
-             echo 'the result is: ';
-             print_r($results);
-
-
-          
-
-          //    for($i=0, $j=0; $i < count($matrixA1D); $i++, $j+=count()){
-               
-               // echo $matrixA1D[$j];
-               // echo 'hello world';
-
-          //    }
-          
-               
-
-             
-
-              
-               
-               // // convert matrixA into a string
-               // $matrixAElement = '';
-               //  foreach ($matrixA as $row){
-               //       foreach ($row as $e){
-
-               //           $matrixAElement .= (string) ' '. $e;
-               //       }
-               //  }
-
-               //  // convert the string into 1D array
-               //  $matrixAElement = explode(' ', $matrixAElement);
-
-               //  // remove the first item
-               //  $matrixAElement = array_slice($matrixAElement, 1, count($matrixAElement) - 1);
-
-
+        
           }// end coversion 
 
-          //
-
-
-
-
+          
           // 1 - get the dimentions of the net matrix
           $cols = count($matrixB[0]);
           $rows = count($matrixA);
 
-          // 2- 
+          $solution = [
+               'result'  => $results,
+               'steps'   => $steps,
+               'matrixA' => $matrixA,
+               '$matrixB'=> $matrixB,
+          ];
+
+          echo json_encode($solution);
+
+          
+          
 
           
      }// end multiplication function
