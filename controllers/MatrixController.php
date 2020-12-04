@@ -64,9 +64,26 @@ class MatrixController
 
                }
              }
+             $results = [];
 
-             echo "the diagonale of A is: ";
-             print_r($matrixADiag);
+             // do the mutiplication operation
+             for ($i=0; $i < count($matrixADiag); $i++){
+
+               for($j=0; $j < count($matrixB); $j++){
+
+                    for($k=0; $k < count($matrixB[0]); $k++){
+
+                         $matrixADiag[$i][$k] = (float) $matrixADiag[$i][$k];
+                         $matrixB[$i][$k] = (float) $matrixB[$j][$k];
+                         $results[$i][$j] += $matrixADiag[$i][$k]*$matrixB[$j][$k];
+                         
+
+                    }
+               }
+             }
+
+             echo 'the result is: ';
+             print_r($results);
 
 
           
