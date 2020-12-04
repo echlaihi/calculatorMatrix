@@ -36,8 +36,8 @@ class MatrixController
 
                }
              }
-          
-          //    transform 1D array into 2D
+
+              //    transform 1D array into 2D
              $matrixBDiag = [];
              for ($i=0; $i < count($matrixA) ; $i++) { 
                   
@@ -49,6 +49,13 @@ class MatrixController
 
                }
              }
+             
+             
+          } else {
+               $matrixBDiag = $matrixB;
+          }
+
+          
 
 
              $steps = [];
@@ -61,28 +68,41 @@ class MatrixController
                        
 
                          $step = '';
-                       for($k=0; $k < count($matrixB[0]); $k++){
+
+                         if(count($matrixBDiag[0]) == 1 ){
+
+                              // $results += $M
+
+                              
+
+                         } else {
+
+
+                              for($k=0; $k < count($matrixB[0]); $k++){
                             
-                         $matrixAD[$i][$k] = (float) $matrixA[$i][$k];
-                         $matrixBDiag[$i][$k] = (float) $matrixBDiag[$j][$k];
-                         @$results[$i][$j] += $matrixA[$i][$k] * $matrixBDiag[$j][$k];
+                                   $matrixAD[$i][$k] = (float) $matrixA[$i][$k];
+                                   $matrixBDiag[$i][$k] = (float) $matrixBDiag[$j][$k];
+                                   @$results[$i][$j] += $matrixA[$i][$k] * $matrixBDiag[$j][$k];
+          
+                                   // print the step when solving each element
+                                   @$step .=  $matrixA[$i][$k] . ' . ' . $matrixBDiag[$j][$k] . ' + ';
+                                   
+                                   if (count($matrixB[0]) === $k + 1){
+          
+                                        $step = substr($step, 0, -2);
+                                        array_push($steps, $step);
+                                   }
+                                 
+          
+                              }
 
-                         // print the step when solving each element
-                         @$step .=  $matrixA[$i][$k] . ' . ' . $matrixBDiag[$j][$k] . ' + ';
-                         
-                         if (count($matrixB[0]) === $k + 1){
 
-                              $step = substr($step, 0, -2);
-                              array_push($steps, $step);
                          }
-                       
-
-                    }
+                      
                }
              }
 
         
-          }// end coversion 
 
           
           // 1 - get the dimentions of the net matrix
