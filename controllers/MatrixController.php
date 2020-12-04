@@ -68,7 +68,7 @@ class MatrixController
                          @$results[$i][$j] += $matrixA[$i][$k] * $matrixBDiag[$j][$k];
 
                          // print the step when solving each element
-                         @$step .=  $matrixA[$i][$k] . ' X ' . $matrixBDiag[$j][$k] . ' + ';
+                         @$step .=  $matrixA[$i][$k] . ' . ' . $matrixBDiag[$j][$k] . ' + ';
                          
                          if (count($matrixB[0]) === $k + 1){
 
@@ -93,7 +93,7 @@ class MatrixController
                'result'  => $results,
                'steps'   => $steps,
                'matrixA' => $matrixA,
-               '$matrixB'=> $matrixB,
+               'matrixB'=> $matrixB,
           ];
 
           echo json_encode($solution);
