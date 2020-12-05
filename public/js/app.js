@@ -136,17 +136,29 @@ $(document).ready(function() {
     // get number of row
     $('#solve').click(function() {
 
-        $('#solve').remove();
+        // delete all the previous data in the solution sccreen
+        $('#solutionScreen').empty();
+
+        // put the row back
+        $('#solutionScreen').append('<div class="row"></div>');
+        // $
 
         function fillArray(id) {
 
-            var matrix = $(`#${id} tr`);
+            var matrix;
+            var matrix = Array.from($(`#${id} tr`));
 
+            // return matrix;
+
+            // if there are many rows the loop through every row and grab the inputs value
             for (let i = 0; i < matrix.length; i++) {
+
+
 
                 matrix[i] = Array.from($(matrix[i]).find('input'));
 
-                for (let j = 0; j < matrix.length; j++) {
+                // if the matrix is 2D loop through all the rows
+                for (let j = 0; j < matrix[i].length; j++) {
 
                     matrix[i][j] = parseFloat($(matrix[i][j]).val());
 
@@ -154,14 +166,48 @@ $(document).ready(function() {
 
             } // end for
 
+            // handle the matrix if it is 1D (one row)
+            if (matrix.length === 1) {
+
+                var matrix1Row = matrix;
+                matrix = [];
+
+                for (var i = 0; i < matrix1Row[0].length; i++) {
+
+                    matrix[i] = matrix1Row[0][i];
+
+
+                }
+
+                return matrix;
+            }
+
+            // handle the matrix if it is 1D (one column)
+            if (matrix[0].length === 1) {
+
+                var matrix1Col = matrix;
+                matrix = [];
+
+                for (var i = 0; i < matrix1Col.length; i++) {
+
+                    matrix[i] = matrix1Col[i][0];
+                }
+
+                return matrix;
+            }
+
             return matrix;
+
 
         } // end function definition
 
 
-        var matrixA = Array.from(fillArray('matrixA'));
-        var matrixB = Array.from(fillArray('matrixB'));
 
+        var matrixA = fillArray('matrixA');
+        var matrixB = fillArray('matrixB');
+
+        console.log(matrixA);
+        console.log(matrixB);
 
         var data = {
             operation: 'multiplication',
@@ -175,7 +221,7 @@ $(document).ready(function() {
         var request = $.ajax({
             url: url,
             data: data,
-            dataType: 'json',
+            // dataType: 'json',
             type: 'get',
             error: function(jqXHR, exception) {
                 console.log(jqXHR);
@@ -186,16 +232,25 @@ $(document).ready(function() {
         request.done(function(response) {
 
             // $('#solutionScreen').show();
+            console.log('there is a response: ');
             console.log(response);
 
-            var matrixA = response['matrixA'];
-            var matrixB = response['matrixB'];
-            var result = response['result'];
-            var steps = response['steps'];
+            // var matrixA = response['matrixA'];
+            // var matrixB = response['matrixB'];
+            // var result  = response['result'];
+            // var steps   = response['steps'];
 
+            var matrixA = [
+                [1, 2, 3],
+                [3, 3, 4],
+                [3, 2, 2]
+            ];
 
+            var matrixB = matrixA;
 
+            var result = matrixA;
 
+            var steps = ['step1', 'step2', 'step3'];
 
             // 1 print matrices in the solution
 
@@ -210,11 +265,9 @@ $(document).ready(function() {
                 }
 
                 var rows = $(`#solutionScreen #${matrix_id} tr`);
-                console.log('hello world');
 
                 for (let j = 0; j < matrix.length; j++) {
 
-                    // console.log(rows[j]);
                     for (let k = 0; k < matrix[0].length; k++) {
 
                         $(rows[j]).append(`<td class="text-center px-3">${matrix[j][k]}</td>`);
