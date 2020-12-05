@@ -17,111 +17,202 @@ class MatrixController
 
    }
 
-  
-
-   protected function multiply($matrixA, $matrixB)
+   public function transpose($matrix)
    {
 
 
-          if (is_array($matrixB[0])){
-               
+     $matrix1D = array();
 
-               $matrixB1D = [];
+     // check that the matrix is 2D
+     if (is_array($matrix[0])){
 
-             foreach ($matrixB as $rows) {
-                  
-               foreach ($rows as $element){
-
-                    array_push($matrixB1D, $element);
-
+          // transform the 2D matrix into 1D
+          for ($i=0; $i <count($matrix) ; $i++) { 
+          
+               for($j=0; $j < count($matrix[$i]); $j++){
+                    array_push($matrix1D, $matrix[$i][$j]);
                }
-             }
-
-              //    transform 1D array into 2D
-             $matrixBDiag = [];
-             for ($i=0; $i < count($matrixA) ; $i++) { 
-                  
-
-               $matrixBDiag[$i] = [];
-               for ($j=$i; $j <count($matrixB1D) ; $j+=count($matrixB)) { 
-                    
-                     array_push($matrixBDiag[$i], $matrixB1D[$j]);
-
-               }
-             }
-             
-             
-          } else {
-               $matrixBDiag = $matrixB;
+     
           }
 
+     } else {
+
+       // if the matrix is already 1D do not do any thing
+       $matrixTr = $matrix;
+
+       // return the transpose matrix
+       return $matrixTr;
           
+     }
+
+     // initialise the matrix Transpose
+     $matrixTr = array();
 
 
-             $steps = [];
-             $results = [];
+     // transpose the matrix1D
+     for($i = 0; $i < count($matrix) ; $i++){
+          
+     for($j=$i, $k=0; $j< count($matrix1D) ; $j += count($matrix), $k++){
+
+               $matrixTr[$i][$k] = $matrix1D[$j];
+
+          }
+     }
+
+     return $matrixTr;
+
+   } // end transpose function definiont
+  
+
+     protected function multiply($matrixA, $matrixB)
+     {
+
+               ##################################
+               ### step 1: transpose matrixB ####
+               ##################################
+               $matrixBTr = $this->transpose($matrixB);
              
-             // do the mutiplication operation
-             for ($i=0; $i < count($matrixA); $i++){
-                  
-                  for($j=0; $j < count($matrixB); $j++){
-                       
+
+               ###########################################
+               ### do the multiplication operations and ## 
+               ###########################################
+
+               $steps = array();
+               $results = array();
+
+               #################################################
+               ### case 1 if matrixA is 1D and matrixB is 1D ###
+               #################################################
+               if(!is_array($matrixA[0]) and !is_array($matrixBTr[0])){
+
+                    // initialise the steps and results variables
+                    $step = '';
+                    $results[0] = 0;
+                    for($i=0; $i < count($matrixA); $i++){
+
+                         $matrixA[$i] = (float) $matrixA[$i];
+                         $matrixBTr[$i] = (float) $matrixBTr[$i];
+
+                         $results[0] += $matrixA[$i] * $matrixBTr[$i];
+                         $step       .= $matrixA[$i] . ' . ' . $matrixBTr[$i] . '  +  ';
+
+                         if($i === count($matrixB) - 1){
+
+                              $step = substr($step, 0, strlen($step) - 3);
+                              array_push($steps, $step);
+
+                             
+                         }
+                    }
+               }
+
+
+           
+
+               #################################################
+               ### case 1 if matrixA is 1D and matrixBTr is 2D ###
+               #################################################
+               if(!is_array($matrixA[0]) and is_array($matrixBTr[0])){
+
+                    for($i=0; $i < count($matrixBTr); $i++){
 
                          $step = '';
-
-                         if(count($matrixBDiag[0]) == 1 ){
-
-                              // $results += $M
-
-                              
-
-                         } else {
+                         $results[$i] = 0;
+                         for($j=0; $j < count($matrixA); $j++){
 
 
-                              for($k=0; $k < count($matrixB[0]); $k++){
-                            
-                                   $matrixAD[$i][$k] = (float) $matrixA[$i][$k];
-                                   $matrixBDiag[$i][$k] = (float) $matrixBDiag[$j][$k];
-                                   @$results[$i][$j] += $matrixA[$i][$k] * $matrixBDiag[$j][$k];
-          
-                                   // print the step when solving each element
-                                   @$step .=  $matrixA[$i][$k] . ' . ' . $matrixBDiag[$j][$k] . ' + ';
-                                   
-                                   if (count($matrixB[0]) === $k + 1){
-          
-                                        $step = substr($step, 0, -2);
-                                        array_push($steps, $step);
-                                   }
-                                 
-          
+                              $results[$i] += $matrixA[$j]*$matrixBTr[$i][$j];
+                              $step        .= $matrixA[$j] . ' . ' . $matrixBTr[$i][$j] . '  +  ';
+
+                              if($j === count($matrixA) - 1){
+
+                                   $step = substr($step, 0, strlen($step) - 3);
+
+                                   array_push($steps, $step);
                               }
 
-
                          }
-                      
+                    }
                }
-             }
+               
 
-        
+               #################################################
+               ### case 1 if matrixA is 2D and matrixB is 1D ###
+               #################################################
+               if(is_array($matrixA[0]) and !is_array($matrixBTr[0])){
 
+
+                    for($i=0; $i < count($matrixA); $i++){
+
+                         $step     = '';
+                         $results[$i]  = 0;
+                         for($j=0; $j < count($matrixBTr); $j++){
+                              
+                            $results[$i] = $matrixA[$i][$j] * $matrixBTr[$j];
+                            $step       .= $matrixA[$i][$j] . ' . ' . $matrixBTr[$j] . '  +  ';
+
+                            if($j == count($matrixBTr) - 1){
+
+                              $step = substr($step, 0, -3);
+                              array_push($steps, $step);
+                            }
+                              
+                         }
+                         
+                    }
+
+                    // print the result into the screen
+               }
+               
+
+               #################################################
+               ### case 1 if matrixA is 2D and matrixB is 2D ###
+               #################################################
+               if(is_array($matrixA[0]) and is_array($matrixBTr)){
+
+
+
+                 for($i=0; $i < count($matrixA); $i++){
+
+
+                    for($j=0; $j < count($matrixBTr); $j++){
+
+                         $step = '';
+                         $results[$i][$j] = 0;
+
+                         for($k=0; $k < count($matrixA[0]); $k++){
+
+                              $results[$i][$j] += $matrixBTr[$j][$k] * $matrixA[$i][$k];
+                              $step            .= $matrixBTr[$j][$k] . ' . ' . $matrixA[$i][$k] . '  +  ';
+                              
+                         }
+
+                         echo $step . PHP_EOL;
+
+                         
+                    }
+                 }
+     
+                    // print the result into the screen
+             
+               }
           
-          // 1 - get the dimentions of the net matrix
-          $cols = count($matrixB[0]);
-          $rows = count($matrixA);
 
-          $solution = [
-               'result'  => $results,
-               'steps'   => $steps,
-               'matrixA' => $matrixA,
-               'matrixB'=> $matrixB,
-          ];
+               ########################################
+               ##### send the result to the browser ###
+               ########################################
 
-          echo json_encode($solution);
+               $solution = [
+                    'result'  => $results,
+                    'steps'   => $steps,
+                    'matrixA' => $matrixA,
+                    'matrixB'=> $matrixB,
+                 ];
 
-          
-          
+               echo json_encode($solution);
 
-          
+                    
+                    
      }// end multiplication function
 
 }// end class defintion
