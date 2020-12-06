@@ -229,11 +229,9 @@ class MatrixController
                ########################################
 
                $solution = [
-                    'result_info'       => ['result_type'=> $result_type, 'result_content' => $results],
-                    'steps'        => $steps,
-                    'matrixA_info' => $matrixA_info,
-                    'matrixB_info' => $matrixB_info,
-                    'result_type'  => $result_type,
+                   'steps' => $steps,
+                   'result'=> $results,
+                   'result_type'=> $result_type,
                ];
 
                echo json_encode($solution);

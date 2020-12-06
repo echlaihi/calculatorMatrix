@@ -239,7 +239,7 @@ $(document).ready(function() {
         }
 
 
-        url = '/index.php?p=solution';
+        var url = '/index.php?p=solution';
         // send data to the server
         var request = $.ajax({
             url: url,
@@ -256,8 +256,11 @@ $(document).ready(function() {
         request.done(function(response) {
 
 
-            // show the solution screen
+            // var data = JSON.parse(response);
+
+            // display the solution screen
             $('#solution').show();
+
             // define a printMatrix array 
             /**
              * 
@@ -373,24 +376,23 @@ $(document).ready(function() {
 
 
 
+            // grab the result data from the response
+            var result = response['result'];
+            var result_type = response['result_type'];
+            var steps = response['steps'];
+            var l = steps.length;
 
 
-            // extract all the data from the response
-            Object.create(matrixA_info);
-            Object.create(matrixB_info);
-            // Object.create(response.result_info)
-            // print the first row in the solution screen
-
-            $('#solutionScreen > div').append('<table class="col-6" id="matrixA"></table>');
-            $('#solutionScreen > div').append('<table class="col-6" id="matrixB"></table>');
+            $('#solutionScreen > div').append('<table class="col-6" id="matrixAResult"></table>');
+            $('#solutionScreen > div').append('<table class="col-6" id="matrixBResult"></table>');
 
             // print the matrixA 
-            printMatrix(matrixA_info['matrix_content'], 'matrixA', matrixA_info['matrix_type'], false);
+            printMatrix(matrixA_info['matrix_content'], 'matrixAResult', matrixA_info['matrix_type'], false);
 
             // print the matrixB
-            printMatrix(matrixB_info.matrix_content, 'matrixB', matrixB_info['matrix_type'], false);
+            printMatrix(matrixB_info['matrix_content'], 'matrixBResult', matrixB_info['matrix_type'], false);
             // print the description of the solution, schema and final result
-            switch (response.result_info['result_type']) {
+            switch (result_type) {
                 case 'number':
 
                     // print the description message  
@@ -400,30 +402,29 @@ $(document).ready(function() {
                     $('#solutionScreen').append(`<div class="row">C</div>`);
 
                     // print the final result
-                    $('#solutionScreen').append(`<div class="row">${response.result_type['matrix_content']}</div>`);
+                    $('#solutionScreen').append(`<div class="row">${result}</div>`);
                     break;
 
                 case 'row':
 
                     // print the message description 
-                    $('#solutionScreen').append(`<div class="row">the result is a matrix row with ${(response.result_type['matrix_content']).length}</div>`);
+                    $('#solutionScreen').append(`<div class="row">the result is a matrix row with ${(result).length}</div>`);
 
                     // print the matrix schema
-                    $('#solutionScreen').append('<div class="row"><table id="schema"><tr><tr></table></div>');
-                    for (var i = 0; i < response.result_type['matrix_content'].length; i++) {
+                    $('#solutionScreen').append('<div class="row"><table id="schema"><tr></tr></table></div>');
+                    for (var i = 0; i < result.length; i++) {
 
+                        // console.log(result.length);
+                        $('#solutionScreen  #schema tr').append(`<td>C<span class="index">${i+1}</span></td>`);
 
-                        for (var j = 0; j < response.result_type['matrix_content']; j++) {
-
-                            $('#solutionScreen > #schema tr').append(`<td>C${i}${j}</td>`);
-                        }
                     }
-
                     // print the final result 
-                    $('#solutionScreen').append('<div class="row"><table id="finalResult"></table></div>');
+                    $('#solutionScreen').append('<div class="row"><table id="finalResult"><tr></tr></table></div>');
 
-                    for (var i = 0; i < response.result_type['matrix_content']; i++) {
-                        $('#screenSolution #finalResult').append(`<tr>${response.result_type['matrix_content'][i]}</tr>`);
+                    for (var i = 0; i < result.length; i++) {
+
+                        $('#solutionScreen div #finalResult tbody tr').append(`<td>${result[i]}</td>`);
+
                     }
 
 
@@ -432,11 +433,11 @@ $(document).ready(function() {
                 case 'col':
 
                     // print the decription message
-                    $('#solutionScreen').append(`<div class="row">the result is a matrix with  with ${response.result_type['matrix_content'][0].length}</div>`);
+                    $('#solutionScreen').append(`<div class="row">the result is a matrix with  with ${result.length}</div>`);
 
                     // print the schema
                     $('#solutionScreen').append('<div class="row"><table id="schema"></table></div>');
-                    for (var i = 0; i < response.result_type['matrix_content']; i++) {
+                    for (var i = 0; i < result.length; i++) {
 
                         $('#solutionScreen #schema').append('<tr></tr>');
 
@@ -445,33 +446,40 @@ $(document).ready(function() {
                     // grab all the rows
                     var rows = $('#solutionScreen #schema tr');
 
-                    for (i = 0; i < response.result_type['matrix_content']; i++) {
+                    for (i = 0; i < rows.length; i++) {
 
 
-                        for (var j = 0; j < response.result_type['matrix_content'][0]; j++) {
-                            $(rows[i]).append(`<td>C${i}${j}</td>`);
-                        }
+                        // for (var j = 0; j < result.length; j++) {
+
+                        $(rows[i]).append(`<td>C<span class="index">${i+1}</span></td>`);
+                        // }
                     }
 
                     // print the final result
-                    // grab all the rows
-                    var rows = $('#screenSolution #finalResult').find('tr');
 
-                    for (var i = 0; i < response.result_type['matrix_content']; i++) {
-                        for (j = 0; j < response.result_type['matrix_content'][0]; j++) {
-                            $(rows[i]).append(`<td>${response.result_type['matrix_content'][i][j]}<td>`);
-                        }
+                    $('#solutionScreen').append('<div class="row"><table id="finalResult"></table></div>')
+
+                    for (var i = 0; i < result.length; i++) {
+
+                        $('#solutionScreen #finalResult').append('<tr></tr>');
+
+                    }
+                    // grab all the rows
+                    var rows = $('#solutionScreen #finalResult').find('tr');
+
+                    for (var j = 0; j < result.length; j++) {
+                        $(rows[j]).append(`<td>${result[j]}<td>`);
                     }
                     break;
 
                 case '2D':
 
                     // print the description message
-                    $('#solutionScreen').append(`<div class="row">the result is a matrix with ${response.result_info['matrix_content'].length} rows, and ${response.result_type['matrix_content'][0].length} columns </div>`);
+                    $('#solutionScreen').append(`<div class="row">the result is a matrix with ${result.length} rows, and ${result[0].length} columns </div>`);
 
                     // print the schema
                     $('#solutionScreen').append('<div class="row"><table id="schema"></table></div>');
-                    for (var i = 0; i < response.result_info['matrix_content']; i++) {
+                    for (var i = 0; i < result.length; i++) {
 
                         $('#solutionScreen #schema').append('<tr></tr>');
 
@@ -480,30 +488,36 @@ $(document).ready(function() {
                     // grab all the rows
                     var rows = $('#solutionScreen #schema tr');
 
-                    for (i = 0; i < response.result_type['matrix_content']; i++) {
+                    for (var i = 0; i < result.length; i++) {
 
 
-                        for (var j = 0; j < response.result_type['matrix_content'][0]; j++) {
-                            $(rows[i]).append(`<td>C${i}${j}</td>`);
+                        for (var j = 0; j < result[0].length; j++) {
+                            $(rows[i]).append(`<td>C<span class="index">${i+1}${j+1}</span></td>`);
                         }
                     }
 
                     // print the final result
-                    $('#matrixSolution').append("<div class='row'><table id='finalResult'></table></div>");
+                    $('#solutionScreen').append("<div class='row'><table id='finalResult'></table></div>");
 
-                    for (var i = 0; i < response.result_type['matrix_content']; i++) {
-                        $('#matrixSolution #finalResult').append('<tr></tr>');
+
+                    for (var i = 0; i < result.length; i++) {
+
+
+                        $('#solutionScreen div #finalResult').append('<tr></tr>');
                     }
                     // grab all the rows
-                    var rows = $('#screenSolution #finalResult').find('tr');
+                    var rows = $('#solutionScreen #finalResult').find('tr');
 
-                    for (var i = 0; i < response.result_type['matrix_content']; i++) {
-                        for (j = 0; j < response.result_type['matrix_content'][0]; j++) {
-                            $(rows[i]).append(`<td>${response.result_type['matrix_content'][i][j]}<td>`);
+                    for (var i = 0; i < result.length; i++) {
+                        for (j = 0; j < result[0].length; j++) {
+                            $(rows[i]).append(`<td>${result[i][j]}<td>`);
                         }
                     }
                     break;
             } // end switch
+
+
+
 
 
 
