@@ -1,5 +1,8 @@
 $(document).ready(function() {
 
+    // hide the solution section untill the user hits solve
+    $('#solution').hide();
+
     // 1- handle the rows
     const numRowsMatrixA = $('[name="matrixARows"]');
 
@@ -224,6 +227,7 @@ $(document).ready(function() {
             // dataType: 'json',
             type: 'get',
             error: function(jqXHR, exception) {
+                console.log('there is an error');
                 console.log(jqXHR);
             }
         });
@@ -231,27 +235,16 @@ $(document).ready(function() {
 
         request.done(function(response) {
 
-            // $('#solutionScreen').show();
-            console.log('there is a response: ');
+            $('#solution').show();
+
+            var matrixA = response['matrixA'];
+            var matrixB = response['matrixB'];
+            var result = response['result'];
+            var steps = response['steps'];
+            var result_type = response['result_type'];
+
+
             console.log(response);
-
-            // var matrixA = response['matrixA'];
-            // var matrixB = response['matrixB'];
-            // var result  = response['result'];
-            // var steps   = response['steps'];
-
-            var matrixA = [
-                [1, 2, 3],
-                [3, 3, 4],
-                [3, 2, 2]
-            ];
-
-            var matrixB = matrixA;
-
-            var result = matrixA;
-
-            var steps = ['step1', 'step2', 'step3'];
-
             // 1 print matrices in the solution
 
             function printMatrix(matrix, matrix_id, name) {
@@ -259,6 +252,7 @@ $(document).ready(function() {
                 // insert an new row
                 $('#solutionScreen > div').append(`<div class="col-6 border"><table id="${matrix_id}"><tbody></tbody></table></div>`);
 
+                // if the matrix 
                 for (let i = 0; i < matrix.length; i++) {
                     $(`#solutionScreen #${matrix_id}`).find('tbody').append('<tr class=""></tr>');
 
