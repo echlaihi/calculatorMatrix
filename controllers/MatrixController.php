@@ -1,7 +1,7 @@
 <?php 
 class MatrixController 
 {
-   public function solve($operation, $matrixA, $matrixB)
+   public function solve($operation, $matrixA_info, $matrixB_info)
    {
 
 
@@ -9,7 +9,7 @@ class MatrixController
         switch($operation){
           
             case 'multiplication':
-                $this->multiply($matrixA, $matrixB);
+                $this->multiply($matrixA_info, $matrixB_info);
             break;
 
         }
@@ -27,6 +27,8 @@ class MatrixController
    {
 
 
+     // extract the content from the matrix_info
+     // $matrix = $matrix_info['matrix_content'];
      $matrix1D = array();
 
      // check that the matrix is 2D
@@ -67,13 +69,19 @@ class MatrixController
      }
 
      return $matrixTr;
+     // !!!!! the matrix type is not included it would be included later
 
 
    } // end transpose function definiont
   
 
-     protected function multiply($matrixA, $matrixB)
+     protected function multiply($matrixA_info, $matrixB_info)
      {
+
+
+               // get the matrixA and the matrixB content
+               $matrixA = $matrixA_info['matrix_content'];
+               $matrixB = $matrixB_info['matrix_content'];
 
                ##################################
                ### step 1: transpose matrixB ####
@@ -176,7 +184,7 @@ class MatrixController
                     }
 
                     // define the result type
-                    $result_type = 'column';
+                    $result_type = 'col';
                }
                
 
@@ -210,7 +218,7 @@ class MatrixController
                  }
      
                   // define the result type
-                  $result_type = 'matrix';
+                  $result_type = '2D';
 
              
                }
@@ -221,11 +229,11 @@ class MatrixController
                ########################################
 
                $solution = [
-                    'result'      => $results,
-                    'steps'       => $steps,
-                    'matrixA'     => $matrixA,
-                    'matrixB'     => $matrixB,
-                    'result_type' => $result_type,
+                    'result_info'       => ['result_type'=> $result_type, 'result_content' => $results],
+                    'steps'        => $steps,
+                    'matrixA_info' => $matrixA_info,
+                    'matrixB_info' => $matrixB_info,
+                    'result_type'  => $result_type,
                ];
 
                echo json_encode($solution);

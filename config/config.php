@@ -34,6 +34,6 @@ function errors_handler($errno, $errstr, $errfile, $errline, $errcontext)
 }
 
 // set the error handler
-// set_error_handler('errors_handler', E_ALL);
+set_error_handler('errors_handler', E_ALL);
 
 // sdf

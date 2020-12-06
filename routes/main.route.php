@@ -18,10 +18,12 @@ switch ($page) {
     case 'solution':
     //    grab the operation
         $operation = $_GET['operation'];
+
     //    grab the matrices
-       $matrixA = $_GET['matrixA'];
-       $matrixB = $_GET['matrixB'];
-       $matrixController->solve($operation, $matrixA, $matrixB); 
+       $matrixA_info = $_GET['matrixA_info'];
+       $matrixB_info = $_GET['matrixB_info'];
+
+       $matrixController->solve($operation, $matrixA_info, $matrixB_info); 
 
 
     break;
