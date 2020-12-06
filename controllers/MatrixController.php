@@ -17,6 +17,12 @@ class MatrixController
 
    }
 
+
+   /**
+    * this function calculate the transpose for a given matrix
+    * @param array  $matrix
+    * @return array $matrixTr
+    */
    public function transpose($matrix)
    {
 
@@ -45,14 +51,15 @@ class MatrixController
           
      }
 
+
      // initialise the matrix Transpose
      $matrixTr = array();
 
 
      // transpose the matrix1D
-     for($i = 0; $i < count($matrix) ; $i++){
+     for($i = 0; $i < count($matrix[0]) ; $i++){
           
-     for($j=$i, $k=0; $j< count($matrix1D) ; $j += count($matrix), $k++){
+           for($j=$i, $k=0; $j< count($matrix1D) ; $j += count($matrix[0]), $k++){
 
                $matrixTr[$i][$k] = $matrix1D[$j];
 
@@ -60,6 +67,7 @@ class MatrixController
      }
 
      return $matrixTr;
+
 
    } // end transpose function definiont
   
@@ -104,14 +112,17 @@ class MatrixController
                              
                          }
                     }
+
+                    // define the result type
+                    $result_type = 'number';
                }
 
 
            
 
-               #################################################
+               ###################################################
                ### case 1 if matrixA is 1D and matrixBTr is 2D ###
-               #################################################
+               ###################################################
                if(!is_array($matrixA[0]) and is_array($matrixBTr[0])){
 
                     for($i=0; $i < count($matrixBTr); $i++){
@@ -133,6 +144,9 @@ class MatrixController
 
                          }
                     }
+
+                    // define the result type
+                    $result_type = 'row';
                }
                
 
@@ -161,19 +175,19 @@ class MatrixController
                          
                     }
 
-                    // print the result into the screen
+                    // define the result type
+                    $result_type = 'column';
                }
                
 
                #################################################
-               ### case 1 if matrixA is 2D and matrixB is 2D ###
+               ### case 4 if matrixA is 2D and matrixB is 2D ###
                #################################################
-               if(is_array($matrixA[0]) and is_array($matrixBTr)){
+               if(is_array($matrixA[0]) and is_array($matrixBTr[0])){
 
 
 
                  for($i=0; $i < count($matrixA); $i++){
-
 
                     for($j=0; $j < count($matrixBTr); $j++){
 
@@ -187,13 +201,17 @@ class MatrixController
                               
                          }
 
-                         echo $step . PHP_EOL;
+                         // record the steps
+                         $step = substr($step, 0, strlen($step)-4);
+                         array_push($steps, $step);
 
                          
                     }
                  }
      
-                    // print the result into the screen
+                  // define the result type
+                  $result_type = 'matrix';
+
              
                }
           
@@ -203,11 +221,12 @@ class MatrixController
                ########################################
 
                $solution = [
-                    'result'  => $results,
-                    'steps'   => $steps,
-                    'matrixA' => $matrixA,
-                    'matrixB'=> $matrixB,
-                 ];
+                    'result'      => $results,
+                    'steps'       => $steps,
+                    'matrixA'     => $matrixA,
+                    'matrixB'     => $matrixB,
+                    'result_type' => $result_type,
+               ];
 
                echo json_encode($solution);
 
