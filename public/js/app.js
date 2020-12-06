@@ -136,7 +136,6 @@ $(document).ready(function() {
 
 
 
-    // get number of row
     $('#solve').click(function() {
 
         // delete all the previous data in the solution sccreen
@@ -151,7 +150,8 @@ $(document).ready(function() {
             var matrix;
             var matrix = Array.from($(`#${id} tr`));
 
-            // return matrix;
+            var matrix_type; // this variable would define if the matrix is row or column or 2D
+
 
             // if there are many rows the loop through every row and grab the inputs value
             for (let i = 0; i < matrix.length; i++) {
@@ -159,6 +159,9 @@ $(document).ready(function() {
 
 
                 matrix[i] = Array.from($(matrix[i]).find('input'));
+
+                // intialise the matrix_info object
+                matrix_info = {};
 
                 // if the matrix is 2D loop through all the rows
                 for (let j = 0; j < matrix[i].length; j++) {
@@ -168,6 +171,11 @@ $(document).ready(function() {
                 } // end for
 
             } // end for
+
+            matrix_info = {
+                'matrix_type': '2D',
+                'matrix_content': matrix,
+            }
 
             // handle the matrix if it is 1D (one row)
             if (matrix.length === 1) {
@@ -180,9 +188,16 @@ $(document).ready(function() {
                     matrix[i] = matrix1Row[0][i];
 
 
+
                 }
 
-                return matrix;
+                var matrix_info = {
+                    'matrix_type': 'row',
+                    'matrix_content': matrix,
+                };
+
+                return matrix_info;
+
             }
 
             // handle the matrix if it is 1D (one column)
@@ -196,26 +211,31 @@ $(document).ready(function() {
                     matrix[i] = matrix1Col[i][0];
                 }
 
-                return matrix;
+                // 
+                var matrix_info = {
+                    'matrix_type': 'col',
+                    'matrix_content': matrix,
+                };
+
+                return matrix_info;
             }
 
-            return matrix;
-
+            return matrix_info;
 
         } // end function definition
 
 
 
-        var matrixA = fillArray('matrixA');
-        var matrixB = fillArray('matrixB');
+        var matrixA_info = fillArray('matrixA');
+        var matrixB_info = fillArray('matrixB');
 
-        console.log(matrixA);
-        console.log(matrixB);
+        console.log(matrixA_info);
+        console.log(matrixB_info);
 
         var data = {
             operation: 'multiplication',
-            matrixA: matrixA,
-            matrixB: matrixB,
+            matrixA_info: matrixA_info,
+            matrixB_info: matrixB_info,
         }
 
 
@@ -224,7 +244,7 @@ $(document).ready(function() {
         var request = $.ajax({
             url: url,
             data: data,
-            // dataType: 'json',
+            dataType: 'json',
             type: 'get',
             error: function(jqXHR, exception) {
                 console.log('there is an error');
@@ -232,123 +252,263 @@ $(document).ready(function() {
             }
         });
 
-
+        // stop the script to test
         request.done(function(response) {
 
+
+            // show the solution screen
             $('#solution').show();
+            // define a printMatrix array 
+            /**
+             * 
+             * @param {array} matrix  it define the matrix to print
+             * @param {string} matrix_id  the name matrix string to pring
+             * @param {string} type  the type of the matrix [row, col, 2D, number]
+             * @param {boolean} is_schema define if the matrix result is a schema of not
+             */
+            function printMatrix(matrix, matrix_id, type, is_schema) {
 
-            var matrixA = response['matrixA'];
-            var matrixB = response['matrixB'];
-            var result = response['result'];
-            var steps = response['steps'];
-            var result_type = response['result_type'];
+                var place = $(`#solutionScreen #${matrix_id}`);
+
+                console.log('the matrix is: ');
+                console.log(type);
+                console.log('the place is this: ');
+                console.log(place);
+
+                switch (type) {
+                    case 'col':
+
+                        // print all the rows
+                        for (var i = 0; i < matrix.length; i++) {
+
+                            $(place).append('<tr></tr>');
+
+                        }
+
+                        // grab all the rows
+                        var rows = $(place).find('tr');
+
+                        console.log(rows);
+                        // print the columns in each row
+                        for (var i = 0; i < rows.length; i++) {
+
+                            // check if the matrix is the schema
+                            if (is_schema) {
+
+                                $(rows[i]).append(`<td>C<span class="index">${i}</span></td>`);
+
+                            } else {
+                                console.log(matrix);
+                                $(rows[i]).append(`<td>${matrix[i]}</td>`);
+                            }
+                        }
+
+                        break;
 
 
-            console.log(response);
-            // 1 print matrices in the solution
+                    case 'row':
 
-            function printMatrix(matrix, matrix_id, name) {
+                        // append the row to the screen
+                        $(place).append('<tr></tr>');
 
-                // insert an new row
-                $('#solutionScreen > div').append(`<div class="col-6 border"><table id="${matrix_id}"><tbody></tbody></table></div>`);
+                        console.log('this is a row');
+                        for (var i = 0; i < matrix.length; i++) {
 
-                // if the matrix 
-                for (let i = 0; i < matrix.length; i++) {
-                    $(`#solutionScreen #${matrix_id}`).find('tbody').append('<tr class=""></tr>');
+                            // check if the matrix is the schema matrix
+                            if (is_schema) {
 
-                }
+                                $(place).append(`<td>C<span class="index">${i}</span></td>`);
 
-                var rows = $(`#solutionScreen #${matrix_id} tr`);
+                            } else {
 
-                for (let j = 0; j < matrix.length; j++) {
+                                $(place).append(`<td>${matrix[i]}</td>`);
 
-                    for (let k = 0; k < matrix[0].length; k++) {
+                            }
+                        }
 
-                        $(rows[j]).append(`<td class="text-center px-3">${matrix[j][k]}</td>`);
+                        break;
+
+
+                    case 'number':
+
+                        // print the number 
+                        console.log('the case is a number');
+                        break;
+
+                    case '2D':
+
+                        // print this if the matrix is 2D
+                        for (var i = 0; i < matrix.length; i++) {
+
+                            $(place).append('<tr></tr>');
+                        }
+
+                        // grab the rows
+                        var rows = $(place).find('tr');
+
+                        // insert column
+                        for (var i = 0; i < matrix.length; i++) {
+
+                            for (var j = 0; j < matrix[0].length; j++) {
+
+                                if (is_schema) {
+
+                                    $(rows[i]).append(`<td>C<span class="index">${i}, ${j}</span></td>`);
+
+                                } else {
+
+                                    $(rows[i]).append(`<td>${matrix[i][j]}</td>`);
+
+                                }
+                            }
+                        }
+
+                        break;
+
+
+                } // end switch
+
+
+            } // end printMatrix function defintion
+
+
+
+
+
+            // extract all the data from the response
+            Object.create(matrixA_info);
+            Object.create(matrixB_info);
+            // Object.create(response.result_info)
+            // print the first row in the solution screen
+
+            $('#solutionScreen > div').append('<table class="col-6" id="matrixA"></table>');
+            $('#solutionScreen > div').append('<table class="col-6" id="matrixB"></table>');
+
+            // print the matrixA 
+            printMatrix(matrixA_info['matrix_content'], 'matrixA', matrixA_info['matrix_type'], false);
+
+            // print the matrixB
+            printMatrix(matrixB_info.matrix_content, 'matrixB', matrixB_info['matrix_type'], false);
+            // print the description of the solution, schema and final result
+            switch (response.result_info['result_type']) {
+                case 'number':
+
+                    // print the description message  
+                    $('#solutionScreen').append(`<div class="row"> the result C is a number: </div>`);
+
+                    // print the schema
+                    $('#solutionScreen').append(`<div class="row">C</div>`);
+
+                    // print the final result
+                    $('#solutionScreen').append(`<div class="row">${response.result_type['matrix_content']}</div>`);
+                    break;
+
+                case 'row':
+
+                    // print the message description 
+                    $('#solutionScreen').append(`<div class="row">the result is a matrix row with ${(response.result_type['matrix_content']).length}</div>`);
+
+                    // print the matrix schema
+                    $('#solutionScreen').append('<div class="row"><table id="schema"><tr><tr></table></div>');
+                    for (var i = 0; i < response.result_type['matrix_content'].length; i++) {
+
+
+                        for (var j = 0; j < response.result_type['matrix_content']; j++) {
+
+                            $('#solutionScreen > #schema tr').append(`<td>C${i}${j}</td>`);
+                        }
                     }
-                }
-            }
+
+                    // print the final result 
+                    $('#solutionScreen').append('<div class="row"><table id="finalResult"></table></div>');
+
+                    for (var i = 0; i < response.result_type['matrix_content']; i++) {
+                        $('#screenSolution #finalResult').append(`<tr>${response.result_type['matrix_content'][i]}</tr>`);
+                    }
 
 
-            // print matrixA and matrixB
-            printMatrix(matrixA, 'matrixA', 'A');
-            printMatrix(matrixB, 'matrixB', 'B');
+                    break;
 
-            // print the matrix result dimentions
-            var description = '<div class="row p-4"><b>C = A . B where C has ' + result.length + ' row(s), and ' + result[0].length + 'columns(s).</b></div>';
-            $('#solutionScreen').append(description);
+                case 'col':
 
+                    // print the decription message
+                    $('#solutionScreen').append(`<div class="row">the result is a matrix with  with ${response.result_type['matrix_content'][0].length}</div>`);
 
+                    // print the schema
+                    $('#solutionScreen').append('<div class="row"><table id="schema"></table></div>');
+                    for (var i = 0; i < response.result_type['matrix_content']; i++) {
 
-            // print the matrix result scheme
-            $('#solutionScreen').append('<div class="row p-4" id="resultSchema"><b>C = </b></div>');
-            $('#solutionScreen #resultSchema').append('<table id="matrixC" class="d-block"></table>');
+                        $('#solutionScreen #schema').append('<tr></tr>');
 
-            for (let i = 0; i < result.length; i++) {
+                    }
 
-                $('#solutionScreen #resultSchema #matrixC').append('<tr></tr>');
-            }
+                    // grab all the rows
+                    var rows = $('#solutionScreen #schema tr');
 
-            var k;
-
-            var rows = $('#solutionScreen #resultSchema tr');
-
-            for (let i = 0; i < result.length; i++) {
-
-                for (let j = 0; j < result[0].length; j++, k++) {
-
-                    $(rows[j]).append(`<td>C <span class="index">${j+1}${i+1}</span></td>`);
+                    for (i = 0; i < response.result_type['matrix_content']; i++) {
 
 
-                }
+                        for (var j = 0; j < response.result_type['matrix_content'][0]; j++) {
+                            $(rows[i]).append(`<td>C${i}${j}</td>`);
+                        }
+                    }
 
-            }
+                    // print the final result
+                    // grab all the rows
+                    var rows = $('#screenSolution #finalResult').find('tr');
 
+                    for (var i = 0; i < response.result_type['matrix_content']; i++) {
+                        for (j = 0; j < response.result_type['matrix_content'][0]; j++) {
+                            $(rows[i]).append(`<td>${response.result_type['matrix_content'][i][j]}<td>`);
+                        }
+                    }
+                    break;
 
-            // print the steps
-            for (let i = 0, k = 0; i < result.length; i++, k++) {
+                case '2D':
 
+                    // print the description message
+                    $('#solutionScreen').append(`<div class="row">the result is a matrix with ${response.result_info['matrix_content'].length} rows, and ${response.result_type['matrix_content'][0].length} columns </div>`);
 
-                for (let j = 0; j < result[0].length; j++, k++) {
+                    // print the schema
+                    $('#solutionScreen').append('<div class="row"><table id="schema"></table></div>');
+                    for (var i = 0; i < response.result_info['matrix_content']; i++) {
 
-                    $('#solutionScreen').append(`<div class="row ml-5"><b>C</b><span class="index mx-1 mt-2" style="">${i+1},${j+1}</span> = ${steps[i+j]}</div>`);
+                        $('#solutionScreen #schema').append('<tr></tr>');
 
+                    }
 
-                }
+                    // grab all the rows
+                    var rows = $('#solutionScreen #schema tr');
 
-            } //
-
-
-            // print the final result
-            var row = $('#solutionScreen #resultSchema tr');
-            $('#solutionScreen').append(`<div class="row ml-5 mt-5" id="finalResult"><b>The final result is: C = </b><table></table></b></div>`);
-
-            for (let i = 0; i < result.length; i++) {
-
-                row = $('#solutionScreen #finalResult table').append('<tr></tr>');
-
-
-            } //
-
-            for (let i = 0; i < result.length; i++) {
-
-                let rows = $('#solutionScreen #finalResult tr');
-                for (let j = 0; j < result[0].length; j++) {
-
-                    $(rows[j]).append(`<td>${result[i][j]}</td>`);
-
-                }
-
-            }
+                    for (i = 0; i < response.result_type['matrix_content']; i++) {
 
 
-        });
+                        for (var j = 0; j < response.result_type['matrix_content'][0]; j++) {
+                            $(rows[i]).append(`<td>C${i}${j}</td>`);
+                        }
+                    }
+
+                    // print the final result
+                    $('#matrixSolution').append("<div class='row'><table id='finalResult'></table></div>");
+
+                    for (var i = 0; i < response.result_type['matrix_content']; i++) {
+                        $('#matrixSolution #finalResult').append('<tr></tr>');
+                    }
+                    // grab all the rows
+                    var rows = $('#screenSolution #finalResult').find('tr');
+
+                    for (var i = 0; i < response.result_type['matrix_content']; i++) {
+                        for (j = 0; j < response.result_type['matrix_content'][0]; j++) {
+                            $(rows[i]).append(`<td>${response.result_type['matrix_content'][i][j]}<td>`);
+                        }
+                    }
+                    break;
+            } // end switch
 
 
 
-    });
+        }); // end request.done funtion
 
-    // $('#solutionScreen').hide();
+    }); // end solve.click funcion
 
-
-});
+}); // end document.ready() function
