@@ -3,8 +3,6 @@
 
         <div class="container-fluid" id="solutionScreen">
 
-                <div class="row">
-                </div>
                 
         </div>
 </section>

@@ -273,11 +273,6 @@ $(document).ready(function() {
 
                 var place = $(`#solutionScreen #${matrix_id}`);
 
-                console.log('the matrix is: ');
-                console.log(type);
-                console.log('the place is this: ');
-                console.log(place);
-
                 switch (type) {
                     case 'col':
 
@@ -291,7 +286,6 @@ $(document).ready(function() {
                         // grab all the rows
                         var rows = $(place).find('tr');
 
-                        console.log(rows);
                         // print the columns in each row
                         for (var i = 0; i < rows.length; i++) {
 
@@ -301,7 +295,6 @@ $(document).ready(function() {
                                 $(rows[i]).append(`<td>C<span class="index">${i}</span></td>`);
 
                             } else {
-                                console.log(matrix);
                                 $(rows[i]).append(`<td>${matrix[i]}</td>`);
                             }
                         }
@@ -383,8 +376,8 @@ $(document).ready(function() {
             var l = steps.length;
 
 
-            $('#solutionScreen > div').append('<table class="col-6" id="matrixAResult"></table>');
-            $('#solutionScreen > div').append('<table class="col-6" id="matrixBResult"></table>');
+            $('#solutionScreen').append('<div class="row"><b>A = </b><table class="" id="matrixAResult"></table></div>');
+            $('#solutionScreen').append('<div class="row"><b>B = </b><table class="" id="matrixBResult"></table></div>');
 
             // print the matrixA 
             printMatrix(matrixA_info['matrix_content'], 'matrixAResult', matrixA_info['matrix_type'], false);
@@ -408,7 +401,7 @@ $(document).ready(function() {
                 case 'row':
 
                     // print the message description 
-                    $('#solutionScreen').append(`<div class="row">the result is a matrix row with ${(result).length}</div>`);
+                    $('#solutionScreen').append(`<div class="row">the result is a matrix <b class="mx-1"> C </b> row with ${(result).length}</div>`);
 
                     // print the matrix schema
                     $('#solutionScreen').append('<div class="row"><table id="schema"><tr></tr></table></div>');
@@ -418,8 +411,15 @@ $(document).ready(function() {
                         $('#solutionScreen  #schema tr').append(`<td>C<span class="index">${i+1}</span></td>`);
 
                     }
+
+                    // print the steps:
+                    for (var i = 0; i < steps.length; i++) {
+                        $('#solutionScreen').append(`<div class="row steps"><b>C<span class="index mr-1">${i+1}</span></b>= ${steps[i]}</div>`);
+
+
+                    }
                     // print the final result 
-                    $('#solutionScreen').append('<div class="row"><table id="finalResult"><tr></tr></table></div>');
+                    $('#solutionScreen').append('<div class="row"><table id="finalResult"><b class="mx-1">C = </b><tr></tr></table></div>');
 
                     for (var i = 0; i < result.length; i++) {
 
@@ -433,10 +433,10 @@ $(document).ready(function() {
                 case 'col':
 
                     // print the decription message
-                    $('#solutionScreen').append(`<div class="row">the result is a matrix with  with ${result.length}</div>`);
+                    $('#solutionScreen').append(`<div class="row">the result is a matrix <b class="mx-1"> C </b> with  with ${result.length}</div>`);
 
                     // print the schema
-                    $('#solutionScreen').append('<div class="row"><table id="schema"></table></div>');
+                    $('#solutionScreen').append('<div class="row"><b>C = </b><table id="schema"></table></div>');
                     for (var i = 0; i < result.length; i++) {
 
                         $('#solutionScreen #schema').append('<tr></tr>');
@@ -455,9 +455,16 @@ $(document).ready(function() {
                         // }
                     }
 
+                    // print the steps
+                    for (var i = 0; i < steps.length; i++) {
+                        $('#solutionScreen').append(`<div class="row steps"><b>C<span class="index mr-1">${i+1}</span></b> = ${steps[i]}</div>`);
+
+
+                    }
+
                     // print the final result
 
-                    $('#solutionScreen').append('<div class="row"><table id="finalResult"></table></div>')
+                    $('#solutionScreen').append('<div class="row"><table id="finalResult"><b class="mx-1">C = </b></table></div>')
 
                     for (var i = 0; i < result.length; i++) {
 
@@ -475,10 +482,10 @@ $(document).ready(function() {
                 case '2D':
 
                     // print the description message
-                    $('#solutionScreen').append(`<div class="row">the result is a matrix with ${result.length} rows, and ${result[0].length} columns </div>`);
+                    $('#solutionScreen').append(`<div class="row">the result is a matrix <b class="mx-1">C</b> with ${result.length} rows, and ${result[0].length} columns </div>`);
 
                     // print the schema
-                    $('#solutionScreen').append('<div class="row"><table id="schema"></table></div>');
+                    $('#solutionScreen').append('<div class="row"><b>C = </b><table id="schema"></table></div>');
                     for (var i = 0; i < result.length; i++) {
 
                         $('#solutionScreen #schema').append('<tr></tr>');
@@ -496,8 +503,19 @@ $(document).ready(function() {
                         }
                     }
 
+                    // print the steps
+                    for (var i = 0; i < result.length; i++) {
+
+                        for (var j = 0; j < result[0].length; j++) {
+
+                            $('#solutionScreen').append(`<div class="row steps"><b>C<span class="index mr-1">${i+1}${j+1} </span></b>= ${steps[i+j]}</div>`);
+
+                        }
+
+                    }
+
                     // print the final result
-                    $('#solutionScreen').append("<div class='row'><table id='finalResult'></table></div>");
+                    $('#solutionScreen').append("<div class='row'><table id='finalResult'><b class'mx-1'>C = </b></table></div>");
 
 
                     for (var i = 0; i < result.length; i++) {
@@ -510,7 +528,7 @@ $(document).ready(function() {
 
                     for (var i = 0; i < result.length; i++) {
                         for (j = 0; j < result[0].length; j++) {
-                            $(rows[i]).append(`<td>${result[i][j]}<td>`);
+                            $(rows[i]).append(`<td>${result[i][j]}</td>`);
                         }
                     }
                     break;
@@ -518,7 +536,24 @@ $(document).ready(function() {
 
 
 
+            // add prenthesis for each matrix
+            var matrices = $('#solutionScreen table');
+            var length = matrices.length;
 
+            console.log(matrices);
+            for (var i = 0; i < length; i++) {
+
+                // get how man rows we have
+                let rowsNum = $(matrices[i]).find('tr').length;
+
+                // console.log(rowsNum);
+
+                // add parenthesis
+                $(matrices[i]).before(`<b class="parenthesis" style="transform-origin: top; margin-right: .3rem ; transform: translateY(-1.7rem)  scaleX(1.8) scaleY(${rowsNum+2})">[</b>`);
+                $(matrices[i]).after(`<b class="parenthesis" style="transform-origin: top; margin-left: .3rem; transform: translateY(-1.7rem)  scaleX(1.8) scaleY(${rowsNum+2})">]</b>`);
+
+
+            }
 
 
         }); // end request.done funtion

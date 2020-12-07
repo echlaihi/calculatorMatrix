@@ -21,3 +21,22 @@
      display: inline-block;
      transform: translateY(.2rem);
  }
+ 
+ #solutionScreen {
+     overflow: hidden;
+     .row {
+         margin: 1rem .5rem;
+     }
+     table {
+         td {
+             min-width: 2rem;
+             min-height: 2rem;
+             padding-left: .5rem;
+             padding-right: .5rem;
+             text-align: center;
+         }
+         b {
+             margin: 0;
+         }
+     }
+ }

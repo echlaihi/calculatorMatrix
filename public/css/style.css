@@ -19,4 +19,24 @@ form input {
   -webkit-transform: translateY(0.2rem);
           transform: translateY(0.2rem);
 }
+
+#solutionScreen {
+  overflow: hidden;
+}
+
+#solutionScreen .row {
+  margin: 1rem .5rem;
+}
+
+#solutionScreen table td {
+  min-width: 2rem;
+  min-height: 2rem;
+  padding-left: .5rem;
+  padding-right: .5rem;
+  text-align: center;
+}
+
+#solutionScreen table b {
+  margin: 0;
+}
 /*# sourceMappingURL=style.css.map */
