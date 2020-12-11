@@ -63,8 +63,8 @@
         <form class="form-inline">
             <fieldset class="form-group mx-auto">
                 <label for="" class="mx-2">select dimentions : </label>
-                <input type="number" name="matrixBRows" value="4" class="w-25 mr-2">
-                <input type="number" name="matrixBColumns" value="3" class="w-25">
+                Rows: <input type="number" name="matrixBRows" value="4" class="w-25 mr-2">
+                Columns: <input type="number" name="matrixBColumns" value="3" class="w-25">
             </fieldset>
 
         </form>

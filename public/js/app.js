@@ -539,18 +539,21 @@ $(document).ready(function() {
             // add prenthesis for each matrix
             var matrices = $('#solutionScreen table');
             var length = matrices.length;
+            var height = $(matrices[0]).find('td').height();
 
-            console.log(matrices);
             for (var i = 0; i < length; i++) {
 
                 // get how man rows we have
                 let rowsNum = $(matrices[i]).find('tr').length;
+                let tableHeight = $(matrices[i]).height();
+                let numScales = tableHeight / 16;
+                console.log(tableHeight);
 
                 // console.log(rowsNum);
 
                 // add parenthesis
-                $(matrices[i]).before(`<b class="parenthesis" style="transform-origin: top; margin-right: .3rem ; transform: translateY(-1.7rem)  scaleX(1.8) scaleY(${rowsNum+2})">[</b>`);
-                $(matrices[i]).after(`<b class="parenthesis" style="transform-origin: top; margin-left: .3rem; transform: translateY(-1.7rem)  scaleX(1.8) scaleY(${rowsNum+2})">]</b>`);
+                $(matrices[i]).before(`<b class="parenthesis" style="transform-origin: top; margin-right: .3rem; transform: translateY(${-tableHeight/2.4}px)  scaleX(1.8) scaleY(${numScales+1})">[</b>`);
+                $(matrices[i]).after(`<b class="parenthesis" style="transform-origin: top; margin-left: .3rem; transform: translateY(${-tableHeight/2.4}px)  scaleX(1.8) scaleY(${numScales+1})">]</b>`);
 
 
             }
